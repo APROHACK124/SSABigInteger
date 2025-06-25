@@ -1,0 +1,1 @@
+g++ run.cpp -ggdb3 -fsanitize=address,undefined -g -D_GLIBCXX_DEBUG -D_GLIBCXX_ASSERTIONS -Wextra -Wall -Wshadow -Wno-sign-compare -Wno-sign-conversion -fmax-errors=3 -DLOCAL -o sol -std=c++17
