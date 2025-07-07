@@ -238,7 +238,7 @@ int stress_test_SSA_karatsuba(){
 int stress_test_SSA(){
     int N = 10;
     long long base = 256;
-    for(int x = 0 ; x < 20 ; ++ x, N *= 2){
+    for(int x = 0 ; x < 28 ; ++ x, N *= 2){
         vector<long long>dA, dB;
         
         for(int i = 0 ; i < N ; ++ i){
