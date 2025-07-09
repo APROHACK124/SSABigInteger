@@ -107,7 +107,7 @@ vector<ll>fast_multiply_ntt(vector<ll>A, vector<ll>B, ll m, ll primitive_root, i
     h_w[0] = 1;
     h_w_inv[0] = 1;
     for(int i = 1 ; i < N ; ++ i){
-        h_w[i] = (h_w[i] * root) % m;
+        h_w[i] = (h_w[i - 1] * root) % m;
         h_w_inv[i] = (h_w_inv[i - 1] * root_1) % m;
     }
 
@@ -166,7 +166,7 @@ vector<ll>fast_multiply_ntt(vector<ll>A, vector<ll>B, ll m, ll primitive_root, i
 
     // Copy back to device
 
-    CHECK_CUDA_ERROR(cudaMemcpyAsync(d_c, result_c.data(), size, cudaMemcpyHostToDevice));
+    CHECK_CUDA_ERROR(cudaMemcpyAsync(result_c.data(), d_c, size, cudaMemcpyDeviceToHost));
     CHECK_CUDA_ERROR(cudaDeviceSynchronize());
 
     cudaFree(d_a);
@@ -176,8 +176,11 @@ vector<ll>fast_multiply_ntt(vector<ll>A, vector<ll>B, ll m, ll primitive_root, i
     cudaFree(d_w_inv);
     cudaStreamDestroy(NTT_A);
     cudaStreamDestroy(NTT_B);
-
-    cout << "okay!" << endl;
+    cudaFreeHost(h_a);
+    cudaFreeHost(h_b);
+    cudaFreeHost(h_c);
+    cudaFreeHost(h_w);
+    cudaFreeHost(h_w_inv);
 
     return result_c;
 }

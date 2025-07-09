@@ -28,4 +28,6 @@ int stress_test_SSA();
 // Stress test for SSA multiplication (CUDA version, placeholder)
 int stress_test_SSA_SSACUDA();
 
+int stress_test_SSACUDA();
+
 #endif // STRESS_H
