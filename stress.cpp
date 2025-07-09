@@ -1,4 +1,5 @@
-#include "SSA.cpp"
+//#include "SSA.cpp"
+#include "cuda_headers.h"
 #include <random>
 #include <time.h>
 #include <chrono>
@@ -236,6 +237,31 @@ int stress_test_SSA_karatsuba(){
 }
 
 int stress_test_SSA(){
+    int N = 10;
+    long long base = 256;
+    for(int x = 0 ; x < 28 ; ++ x, N *= 2){
+        vector<long long>dA, dB;
+        
+        for(int i = 0 ; i < N ; ++ i){
+            dA.push_back(random(1, base - 1));
+            dB.push_back(random(1, base - 1));
+        }
+        big_integer A(dA, false, base), B(dB, false, base);
+        cout << N << endl;
+
+    
+        auto start = std::chrono::high_resolution_clock::now();
+        big_integer result_SSA = ssa_multiplication(A, B);
+        auto end_time = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start);
+
+        cout << " ! " << fixed << setprecision(7) << duration.count() / 1000.0 << endl;
+  
+    }
+    return 1;
+}
+
+int stress_test_SSA_SSACUDA(){
     int N = 10;
     long long base = 256;
     for(int x = 0 ; x < 28 ; ++ x, N *= 2){

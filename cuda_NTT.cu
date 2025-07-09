@@ -1,7 +1,6 @@
-/// NO LONGER USED
-
-
 #include "modular.cpp"
+#include <cuda_runtime.h>
+#include <stdio.h>
 #include <math.h>
 #include <vector>
 #include <random>
@@ -12,29 +11,52 @@
 
 using namespace std;
 
-// This works but it's hard to add parallelism.
-// void recursive_ntt(std::vector<ll>& a, ll m, ll omega, bool inverse) {
-//     int n = a.size();
-//     if (n <= 1) return;
+// TODO: convert to kernel (idk how)
+void bit_reverse_permutation_faster(std::vector<ll>& a) {
+    int n = a.size();
 
-//     std::vector<ll> a0(n / 2), a1(n / 2);
-//     for (int i = 0; i < n / 2; i++) {
-//         a0[i] = a[i * 2];
-//         a1[i] = a[i * 2 + 1];
-//     }
+    for(int i = 1 , j = 0 ; i < n ; ++ i){
+        int bit = n >> 1;
+        for(; j & bit ; bit >>= 1)
+            j ^= bit;
+            j ^= bit;
 
-//     recursive_ntt(a0, m, pow_mod(omega, 2, m), inverse);
-//     recursive_ntt(a1, m, pow_mod(omega, 2, m), inverse);
+        if(i < j)
+            swap(a[i], a[j]);
+    }
 
-//     ll w = 1;
-//     ll w_n = inverse ? mod_inverse(omega, m) : omega;
-//     for (int i = 0; i < n / 2; i++) {
-//         ll t = mul_mod(w, a1[i], m);
-//         a[i] = add_mod(a0[i], t, m);
-//         a[i + n / 2] = sub_mod(a0[i], t, m);
-//         w = mul_mod(w, w_n, m);
-//     }
-// }
+}
+
+__global__ void inverse_scale(ll *a, ll u, int N, int m){
+    int idx = blockIdx.x * blockDim.x + threadIdx.x;
+    if(idx < N){
+        a[idx] = (a[idx] * u) % m;
+    }
+}
+
+__global__ void ntt_kernel(ll *a, ll *w_table, int n, int n_2, ll m, int len, int len_2){
+    int thread_idx = blockIdx.x * blockDim.x + threadIdx.x;
+
+    if(thread_idx < n_2){
+        int j = thread_idx % len_2;
+        int i_base = (thread_idx / len_2) * len;
+
+        int idx1 = i_base + j;
+        int idx2 = idx1 + len_2;
+
+        int w_idx = j * (n / len);
+        ll w = w_table[w_idx];
+
+        ll u = a[idx1];
+        ll v = (a[idx2] * w) % m;
+
+        a[idx1] = u + v < m ? u + v : u + v - m;
+        a[idx2] = u - v >= 0 ? u - v : u - v + m;
+    }
+
+}
+
+
 
 
 /**
@@ -122,17 +144,3 @@ void ntt_iterative(std::vector<ll>& a, ll m, ll primitive_root, bool inverse) {
     }
 
 }
-
-// void ntt(std::vector<ll>& a, ll m, ll primitive_root, bool inverse) {
-//     int n = a.size();
-//     ll omega = pow_mod(primitive_root, (m - 1) / n, m);
-//     recursive_ntt(a, m, omega, inverse);
-
-//     if (inverse) {
-//         ll inv_n = mod_inverse(n, m);
-//         for (ll& x : a) {
-//             x = mul_mod(x, inv_n, m);
-//         }
-//     }
-// }
-
