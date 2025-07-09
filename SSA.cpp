@@ -1,3 +1,5 @@
+/// THIS FILE IS NO LONGER USED (here just in case everything goes wrong)
+
 #include "NTT.cpp"
 #include "bigInteger.cpp"
 
