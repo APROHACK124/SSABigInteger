@@ -1,4 +1,7 @@
-#include "modular.cpp"
+// cuda_NTT.cu
+#include "modular.h"
+
+#define ll long long
 #include <cuda_runtime.h>
 #include <stdio.h>
 #include <math.h>

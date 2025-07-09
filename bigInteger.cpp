@@ -1,3 +1,5 @@
+// bigInteger.cpp
+#include "bigInteger.h"
 #include <iostream>
 #include <vector>
 #include <string.h>
@@ -98,31 +100,19 @@ int closest_power2_up(long long v){
 	}
 }
 
-struct big_integer;
 
-big_integer division(big_integer u, big_integer v);
-big_integer slow_multiplication(const big_integer &a, const big_integer &other);
-big_integer karatsuba(big_integer a, big_integer b);
-big_integer remainder(big_integer a, big_integer b);
-
-struct big_integer{
-	bool negative;
-	vector<long long>digits;
-	int base;
-
-
-	big_integer(vector<long long>d, bool is_negative, int b) : digits(d) {
+	big_integer::big_integer(vector<long long>d, bool is_negative, int b) : digits(d) {
 		base = b;
 		negative = is_negative;
 	}
 
-	big_integer(bool is_neg, vector<long long>d, int b) : negative(is_neg), digits(d), base(b) {
+	big_integer::big_integer(bool is_neg, vector<long long>d, int b) : negative(is_neg), digits(d), base(b) {
 		leading_zeroes();
 	}
 
 
 
-	long long to_longlong(){
+	ll big_integer::to_longlong(){
 
 		leading_zeroes();
 
@@ -137,14 +127,14 @@ struct big_integer{
 		return result;
 	}
 
-	int first_non_zero() const {
+	int big_integer::first_non_zero() const {
 		for(int i = (int)digits.size() - 1 ; i >= 0 ; -- i){
 			if(digits[i] != 0)return i;
 		}
 		return -1;
 	}
 
-	string print() const {
+	string big_integer::print() const {
 		if(negative)cout << "-" ;
 		auto aux = digits;
 ///		while(!aux.empty() && aux.back() == 0)aux.pop_back();
@@ -155,7 +145,7 @@ struct big_integer{
 		return "";
 	}
 
-	big_integer operator<<(int amount) const {
+	big_integer big_integer::operator<<(int amount) const {
 		vector<long long>aux(amount, 0);
 		big_integer result(aux, false, base);
 
@@ -165,7 +155,7 @@ struct big_integer{
 		return result;
 	}
 
-	void leading_zeroes(){
+	void big_integer::leading_zeroes(){
 		while(digits.size() > 1 && digits.back() == 0)digits.pop_back();
 		if(digits.empty()){
 			digits.push_back(0);
@@ -173,7 +163,7 @@ struct big_integer{
 		}
 	}
 
-	bool operator== (const big_integer &other) const {
+	bool big_integer::operator== (const big_integer &other) const {
 
 		
 		int f = first_non_zero(), o = other.first_non_zero();
@@ -186,7 +176,7 @@ struct big_integer{
 		return true;
 	}
 
-	bool operator<(const big_integer &other) const {
+	bool big_integer::operator<(const big_integer &other) const {
 		if(negative != other.negative){
 			return negative;
 		}
@@ -207,11 +197,11 @@ struct big_integer{
 	}
 
 
-	bool operator<=(const big_integer &other) const{
+	bool big_integer::operator<=(const big_integer &other) const{
 		return (*this < other) || (*this == other);
 	}
 
-	big_integer operator+(const big_integer &other) const {
+	big_integer big_integer::operator+(const big_integer &other) const {
 
 		if(negative == other.negative){
 			big_integer result(add_digits(digits, other.digits, base), negative, base);
@@ -228,22 +218,22 @@ struct big_integer{
 
 	}
 
-	bool nonzero() const {
+	bool big_integer::nonzero() const {
 		for(auto &u : digits){
 			if(u != 0)return true;
 		}
 		return false;
 	}
 
-	bool operator!=(const big_integer &other) const {
+	bool big_integer::operator!=(const big_integer &other) const {
 		return not (*this == other);
 	}
 
-	bool operator>(const big_integer &other) const {
+	bool big_integer::operator>(const big_integer &other) const {
 		return other < *this;
 	}
 
-	big_integer operator-(const big_integer &other) const {
+	big_integer big_integer::operator-(const big_integer &other) const {
 
 		if(other.negative){
 			big_integer aux(other);
@@ -267,11 +257,11 @@ struct big_integer{
 	}
 	
 
-	big_integer operator/(const big_integer &other) const{
+	big_integer big_integer::operator/(const big_integer &other) const{
 		return division(*this, other);
 	}
 
-	big_integer operator%(const big_integer &other) const {
+	big_integer big_integer::operator%(const big_integer &other) const {
 		return remainder(*this, other);	
 	}
 
@@ -293,7 +283,7 @@ struct big_integer{
 	// 	return result;
 	// }
 
-	big_integer operator*(const big_integer &other) const {
+	big_integer big_integer::operator*(const big_integer &other) const {
 
 		big_integer aux(*this);
 		big_integer o(other);
@@ -309,7 +299,7 @@ struct big_integer{
 
 	
 
-};
+
 
 big_integer ll_to_big_integer(long long u){
 	big_integer result({0}, false, 10);

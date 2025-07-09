@@ -1,9 +1,12 @@
-//#include "SSA.cpp"
-#include "cuda_headers.h"
+#include "bigInteger.h"
+#include "cuda_SSA.h"
+#include <iostream>
 #include <random>
 #include <time.h>
 #include <chrono>
 #include <iomanip>
+using namespace std;
+
 void test(){
 	int base;
 	cout << "Base: ";
@@ -262,9 +265,9 @@ int stress_test_SSA(){
 }
 
 int stress_test_SSA_SSACUDA(){
-    int N = 10;
+    int N = 2;
     long long base = 256;
-    for(int x = 0 ; x < 28 ; ++ x, N *= 2){
+    for(int x = 0 ; x < 20 ; ++ x, N *= 2){
         vector<long long>dA, dB;
         
         for(int i = 0 ; i < N ; ++ i){
@@ -274,14 +277,33 @@ int stress_test_SSA_SSACUDA(){
         big_integer A(dA, false, base), B(dB, false, base);
         cout << N << endl;
 
-    
         auto start = std::chrono::high_resolution_clock::now();
         big_integer result_SSA = ssa_multiplication(A, B);
         auto end_time = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start);
+        cout << " ! " << fixed << setprecision(7) << duration.count() / 1000.0 << endl;
+
+        start = std::chrono::high_resolution_clock::now();
+        big_integer result_SSA_CUDA = ssa_multiplication_cuda(A, B);
+        end_time = std::chrono::high_resolution_clock::now();
+        duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start);
 
         cout << " ! " << fixed << setprecision(7) << duration.count() / 1000.0 << endl;
-  
+        
+
+       
+        if(result_SSA_CUDA != result_SSA){
+            cout << "wrong " << endl;
+            cout << A.print() << endl;
+            cout << B.print() << endl;
+            
+            cout << result_SSA_CUDA.to_longlong() << endl;
+            cout << result_SSA.to_longlong() << endl;
+            cout << result_SSA_CUDA.print() << endl;
+            cout << result_SSA.print() << endl;
+            cout << (A * B).print() << endl;
+            return 0;
+        }
     }
     return 1;
 }
