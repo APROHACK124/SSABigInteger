@@ -110,6 +110,12 @@ int closest_power2_up(long long v){
 		leading_zeroes();
 	}
 
+	big_integer::big_integer(long long base){
+		digits = {0};
+		base = base;
+		negative = false;
+	}
+
 
 
 	ll big_integer::to_longlong(){
@@ -139,7 +145,8 @@ int closest_power2_up(long long v){
 		auto aux = digits;
 ///		while(!aux.empty() && aux.back() == 0)aux.pop_back();
 		for(int i = (int)aux.size() - 1 ; i >= 0 ; -- i){
-			cout << aux[i] << " ";
+			cout << aux[i];
+			if(base > 10)cout << " ";
 		}
 		if(aux.empty())cout << 0;
 		return "";

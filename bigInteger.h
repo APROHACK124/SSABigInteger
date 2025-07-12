@@ -30,6 +30,7 @@ struct big_integer {
     // Constructors
     big_integer(std::vector<ll> d, bool is_negative, int b);
     big_integer(bool is_neg, std::vector<ll> d, int b);
+    big_integer(long long base);
 
     // Convert to long long
     ll to_longlong();
