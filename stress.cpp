@@ -145,9 +145,9 @@ int stress_test(){
 
 int stress_test_basis(){
     for(long long i = 0 ; i < 1e3 ; ++ i){
-		long long x = random(-1e8, 1e8), y = random(-1e8, 1e8);
-		long long base = random(2, 1e2);
-        long long base2 = random(2, 1e2);
+		long long x = random(-1e9, 1e9), y = random(-1e9, 1e9);
+		long long base = random(1e8, 1e8 + 2);
+        long long base2 = random(1e8, 1e8 + 2);
 		big_integer A = convert_base_10_to_x(x, base), B = convert_base_10_to_x(y, base);
         big_integer a = change_basis(A, base2), b = change_basis(B, base2);
 		if((a + b).to_longlong() != (A + B).to_longlong()){
@@ -198,7 +198,7 @@ int stress_test_basis(){
 
 int stress_test_SSA_karatsuba(){
     int N = 10;
-    long long base = 256;
+    long long base = 1e5;
     for(int x = 0 ; x < 20 ; ++ x, N *= 2){
         vector<long long>dA, dB;
         
@@ -216,7 +216,7 @@ int stress_test_SSA_karatsuba(){
         cout << " ! " << fixed << setprecision(7) << duration.count() / 1000.0 << endl;
 
         start = std::chrono::high_resolution_clock::now();
-        big_integer result_SSA = ssa_multiplication(A, B);
+        big_integer result_SSA = ssa_multiplication(A, B, base);
         end_time = std::chrono::high_resolution_clock::now();
         duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start);
 
@@ -254,7 +254,7 @@ int stress_test_SSA(){
 
     
         auto start = std::chrono::high_resolution_clock::now();
-        big_integer result_SSA = ssa_multiplication(A, B);
+        big_integer result_SSA = ssa_multiplication(A, B, base);
         auto end_time = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start);
 
@@ -279,7 +279,7 @@ int stress_test_SSACUDA(){
 
     
         auto start = std::chrono::high_resolution_clock::now();
-        big_integer result_SSA = ssa_multiplication_cuda(A, B);
+        big_integer result_SSA = ssa_multiplication_cuda(A, B, base);
         auto end_time = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start);
 
@@ -291,9 +291,9 @@ int stress_test_SSACUDA(){
 
 
 int stress_test_SSA_SSACUDA(){
-    int N = 2;
-    long long base = 256;
-    for(int x = 0 ; x < 30 ; ++ x, N *= 2){
+    int N = 32;
+    long long base = 1e8;
+    for(int x = 0 ; N <= (1 << 25) ; ++ x, N *= 2){
         vector<long long>dA, dB;
         
         for(int i = 0 ; i < N ; ++ i){
@@ -304,13 +304,13 @@ int stress_test_SSA_SSACUDA(){
         cout << N << endl;
 
         auto start = std::chrono::high_resolution_clock::now();
-        big_integer result_SSA = ssa_multiplication(A, B);
+        big_integer result_SSA = ssa_multiplication(A, B, base);
         auto end_time = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start);
         cout << " ! " << "SSA (No cuda) "<< fixed << setprecision(7) << duration.count() / 1000.0 << endl;
 
         start = std::chrono::high_resolution_clock::now();
-        big_integer result_SSA_CUDA = ssa_multiplication_cuda(A, B);
+        big_integer result_SSA_CUDA = ssa_multiplication_cuda(A, B, base);
         end_time = std::chrono::high_resolution_clock::now();
         duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start);
 

@@ -5,4 +5,4 @@ g++ -std=c++11 -c modular.cpp -o modular.o
 g++ -std=c++11 -c stress.cpp -o stress.o
 g++ -std=c++11 -c run.cpp -o run.o
 nvcc cuda_SSA.o cuda_NTT.o bigInteger.o modular.o stress.o run.o -o run -lnvToolsExt
-sudo nsys profile --trace cuda,nvtx --gpu-metrics-devices=all --stats=true ./run
+sudo nsys profile --trace cuda,nvtx --stats=true ./run

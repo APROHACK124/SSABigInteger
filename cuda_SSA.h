@@ -29,9 +29,9 @@ int next_power_of_two(int x);
 std::vector<ll> fast_multiply_ntt(std::vector<ll> A, std::vector<ll> B, ll m, ll primitive_root, int desired_base);
 
 // SSA multiplication using CUDA
-big_integer ssa_multiplication_cuda(const big_integer& a, const big_integer& b);
+big_integer ssa_multiplication_cuda(const big_integer& a, const big_integer& b, int target_base);
 
 // SSA multiplication on CPU
-big_integer ssa_multiplication(const big_integer& a, const big_integer& b);
+big_integer ssa_multiplication(const big_integer& a, const big_integer& b, int target_base);
 
 #endif // CUDA_SSA_H

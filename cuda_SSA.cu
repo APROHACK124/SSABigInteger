@@ -212,12 +212,11 @@ vector<ll>fast_multiply_ntt(vector<ll>A, vector<ll>B, ll m, ll primitive_root){
     return result_c;
 }
 
-big_integer ssa_multiplication_cuda(const big_integer& a, const big_integer& b) {
+big_integer ssa_multiplication_cuda(const big_integer& a, const big_integer& b, int target_base) {
     bool negative = a.negative != b.negative;
     big_integer abs_a = a.negative ? -a : a;
     big_integer abs_b = b.negative ? -b : b;
     nvtxRangePush("Changing Base");
-    int target_base = 256;
     big_integer a_base256 = change_basis(abs_a, target_base);
     big_integer b_base256 = change_basis(abs_b, target_base);
 
@@ -247,7 +246,6 @@ big_integer ssa_multiplication_cuda(const big_integer& a, const big_integer& b) 
 
     int uses = 0;
     __int128_t max_digit = 1;
-    assert(N * target_base < LLONG_MAX / target_base); // The number won't fit
 
     while(uses < 3 && max_digit < (__int128_t)N * target_base * target_base){
         max_digit *= (__int128_t)moduli[uses];
@@ -295,12 +293,11 @@ big_integer ssa_multiplication_cuda(const big_integer& a, const big_integer& b) 
     return biResult;
 }
 
-big_integer ssa_multiplication(const big_integer& a, const big_integer& b) {
+big_integer ssa_multiplication(const big_integer& a, const big_integer& b, int target_base) {
     bool negative = a.negative != b.negative;
     big_integer abs_a = a.negative ? -a : a;
     big_integer abs_b = b.negative ? -b : b;
 
-    int target_base = 256;
     big_integer a_base256 = change_basis(abs_a, target_base);
     big_integer b_base256 = change_basis(abs_b, target_base);
 
@@ -318,7 +315,7 @@ big_integer ssa_multiplication(const big_integer& a, const big_integer& b) {
 
     // Update depending on the number of moduli to use
     vector<ll>moduli = {1004535809, 998244353, 897581057};
-    vector<ll>primitive_root_vector = {3, 3};
+    vector<ll>primitive_root_vector = {3, 3, 3};
     vector<vector<ll>>results;
 
     int uses = 0;

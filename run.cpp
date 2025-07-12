@@ -6,8 +6,9 @@ int main(){
     //  stress_test();
     //  stress_test_basis();
     // stress_test_SSA();
+    // stress_test_SSA_karatsuba();
+    stress_test_SSA_SSACUDA();
     // stress_test_SSACUDA();
-    stress_test_SSACUDA();
 
     // stress_test_SSA_SSACUDA();
     
