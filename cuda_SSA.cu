@@ -210,12 +210,41 @@ big_integer ssa_multiplication_cuda(const big_integer& a, const big_integer& b) 
     bit_reverse_permutation_faster(b_digits);
 
     // Update depending on the number of moduli to use
+    vector<ll>moduli = {998244353};
+    vector<ll>primitive_root_vector = {3};
+    vector<ll>results;
 
-    ll m = 998244353; 
-    ll primitive_root = 3;
-    vector<ll>result = fast_multiply_ntt(a_digits, b_digits, m, primitive_root, target_base);
+    int uses = 0;
+    ll max_digit = 1;
+    assert(N * target_base < LLONG_MAX / target_base); // The number won't fit
+    while(uses < 3 && max_digit < N * target_base * target_base){
+        max_digit *= moduli[uses];
+        uses ++;
+    }
+
+    for(int i = 0 ; i < uses ; ++ i){
+        ll m = moduli[i];
+        ll primitive_root = primitive_root_vector[i];
+        results.push_back(fast_multiply_ntt(a_digits, b_digits, m, primitive_root, target_base));
+    }
 
     // TODO: Join everything with CRT
+    long long M = 1;
+    for(int u = 0 ; u < uses ; ++ u){
+        M *= moduli[u];
+    }
+
+    int sz_rta = results.back().size();
+    vector<ll>result(sz_rta);
+    for(int i = 0 ; i < sz_rta ; ++ i){
+        result[i] = 0;
+        for(int u = 0 ; u < uses ; ++ u){
+            long long a_i = results[u][i];
+            long long M_i = M / moduli[u];
+            long long N_i = mod_inv(M_i, moduli[u]);
+            result[i] = (result[i] + (((a_i * M_i) % M * N_i) % M)) % M;
+        }
+    }
     
     vector<ll> result_digits = carry_propagation(result, target_base);
 
