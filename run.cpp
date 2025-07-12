@@ -6,7 +6,13 @@ int main(){
     //  stress_test();
     //  stress_test_basis();
     // stress_test_SSA();
+    // stress_test_SSACUDA();
     stress_test_SSACUDA();
+
+    // stress_test_SSA_SSACUDA();
+    
+    
+    
     // cout << pow_mod(2, 8191 - 1, 8191) << endl;
 
     // big_integer A = convert_base_10_to_x(575, 256), B = convert_base_10_to_x(768, 256);

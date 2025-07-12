@@ -3,6 +3,7 @@
 
 #define ll long long
 #include <cuda_runtime.h>
+#include <nvtx3/nvToolsExt.h>
 #include <stdio.h>
 #include <math.h>
 #include <vector>
@@ -16,6 +17,7 @@ using namespace std;
 
 // TODO: convert to kernel (idk how)
 void bit_reverse_permutation_faster(std::vector<ll>& a) {
+    nvtxRangePush("bit_reversing_operations");
     int n = a.size();
 
     for(int i = 1 , j = 0 ; i < n ; ++ i){
@@ -27,7 +29,7 @@ void bit_reverse_permutation_faster(std::vector<ll>& a) {
         if(i < j)
             swap(a[i], a[j]);
     }
-
+    nvtxRangePop();
 }
 
 __global__ void inverse_scale(ll *a, ll u, int N, int m){

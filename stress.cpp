@@ -265,9 +265,9 @@ int stress_test_SSA(){
 }
 
 int stress_test_SSACUDA(){
-    int N = 10;
+    int N = (1 << 22);
     long long base = 256;
-    for(int x = 0 ; x < 28 ; ++ x, N *= 2){
+    for(int x = 0 ; N <= (1 << 25) ; ++ x, N *= 2){
         vector<long long>dA, dB;
         
         for(int i = 0 ; i < N ; ++ i){
